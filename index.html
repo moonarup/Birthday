@@ -9,6 +9,12 @@
       --bg1:#2c0638; --bg2:#4a1063; --accent:#ff69b4; --accent2:#9932cc; --ink:#f6f6f9; --muted:#cbd5e1;
       --card:#3a1f47; --glass:rgba(255,255,255,.1);
     }
+  /* floating gentle background animation */
+  .floating-bg{position:fixed; inset:0; pointer-events:none; z-index:-1;}
+  .blob{position:absolute; filter:blur(60px); opacity:.18; mix-blend-mode:screen; animation:float 12s ease-in-out infinite}
+  .blob.a{left:-10%; top:10%; width:500px; height:500px; background:linear-gradient(90deg,var(--accent),var(--accent2));}
+  .blob.b{right:-5%; top:40%; width:420px; height:420px; background:linear-gradient(90deg,#ffb6e6,#b388f8);}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -28,9 +34,11 @@
     .accent{background:linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent}
     p.lead{font-size:clamp(1rem, 1.6vw, 1.2rem); color:var(--muted)}
     .btn{appearance:none; border:0; padding:14px 18px; border-radius:14px; cursor:pointer; font-weight:700; color:#0b0b10;
-      box-shadow:0 4px 0 rgba(0,0,0,.25); background:linear-gradient(180deg,#fff,#eaeaff)}
+      box-shadow:0 6px 18px rgba(0,0,0,.28); background:linear-gradient(180deg,#fff,#eaeaff); transition:transform .18s ease, box-shadow .18s ease}
     .btn:hover{transform:translateY(-1px)}
     .btn.secondary{background:linear-gradient(180deg,#ffd7f0,#ffc2ea)}
+    .btn.pulse{animation:pulse 2.4s infinite; box-shadow:0 10px 30px rgba(255,105,180,.12)}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
     .row{display:flex; flex-wrap:wrap; gap:12px}
 
     .countdown{display:grid; grid-template-columns:repeat(4, minmax(72px, 1fr)); gap:12px; margin-top:16px}
@@ -41,6 +49,10 @@
     .section{margin-top:28px}
     .gallery{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px}
     .gallery img{width:100%; height:160px; object-fit:cover; border-radius:14px; border:1px solid rgba(255,255,255,.1)}
+  .gallery img{transition:transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .25s; cursor:pointer}
+  .gallery img:hover{transform:translateY(-6px) scale(1.03) rotate(-1deg); box-shadow:0 18px 40px rgba(0,0,0,.32)}
+  .portrait{cursor:pointer; transition:transform .28s ease}
+  .portrait:active{transform:scale(.98)}
 
     .letter{min-height:140px; resize:vertical; width:100%; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:var(--ink);
       border-radius:16px; padding:14px; font-size:1rem}
@@ -50,6 +62,11 @@
     .modal[open]{display:grid}
 
     .tiny{font-size:.9rem; color:var(--muted)}
+
+  /* Lightbox */
+  .lightbox{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.75); z-index:9999}
+  .lightbox[open]{display:flex}
+  .lightbox img{max-width:92vw; max-height:86vh; border-radius:10px; box-shadow:0 30px 80px rgba(0,0,0,.6)}
 
     /* Print as keepsake */
     @media print{
@@ -64,6 +81,10 @@
   </style>
 </head>
 <body>
+  <div class="floating-bg" aria-hidden="true">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+  </div>
   <canvas id="confetti" aria-hidden="true"></canvas>
   <canvas id="hearts" aria-hidden="true"></canvas>
 
@@ -82,8 +103,9 @@
         </div>
       </div>
       <div class="card" style="text-align:center">
-        <img src="SHE.jpg" alt="Sangrila" style="width:100%; height:260px; object-fit:cover; border-radius:14px; margin-bottom:12px" />
+        <img src="SHE.jpg" alt="Sangrila" class="portrait" id="portrait" style="width:100%; height:260px; object-fit:cover; border-radius:14px; margin-bottom:12px" />
         <p class="tiny" style="margin-bottom:12px">Made just for you, Sangrila 💖</p>
+        <div style="margin-top:6px"><small class="tiny">Tap your photo for a little surprise ✨</small></div>
       </div>
     </section>
 
@@ -97,6 +119,10 @@
         <img src="SHE.jpg" alt="Precious moments with Sangrila" />
       </div>
     </section>
+
+    <dialog class="lightbox" id="lightbox">
+      <img id="lightboxImg" alt="" />
+    </dialog>
 
     <section class="section card">
       <h2 style="margin:0 0 8px"><span class="accent">My Love Letter</span> to <span id="herName2">Sangrila</span></h2>
@@ -114,6 +140,7 @@ YOUR_NAME
       <div class="row" style="margin-top:10px">
         <button class="btn" id="copyLetter">Copy Letter</button>
         <button class="btn secondary" id="printLetter">Print Letter</button>
+        <button class="btn pulse" id="playMsgBtn">Play Message</button>
       </div>
     </section>
 
@@ -169,6 +196,31 @@ YOUR_NAME
       byId('prize').style.display = 'block';
       blastConfetti(260);
       toast('Happy Birthday, Sangrila!');
+    });
+
+    // Lightbox for gallery images
+    const lightbox = byId('lightbox'); const lightboxImg = byId('lightboxImg');
+    document.querySelectorAll('#gallery img').forEach(img=>{
+      img.addEventListener('click', e=>{
+        lightboxImg.src = e.currentTarget.src;
+        lightbox.setAttribute('open','');
+        blastConfetti(60);
+      });
+    });
+    lightbox.addEventListener('click', ()=> lightbox.removeAttribute('open'));
+
+    // Portrait click: small burst + message
+    byId('portrait').addEventListener('click', ()=>{
+      blastConfetti(180); toast('I love you, Sangrila 💖');
+    });
+
+    // Typewriter play for the love letter
+    function typeText(el, text, delay=18){ el.value=''; el.focus(); let i=0; const t=setInterval(()=>{ el.value += text[i++]||''; if(i>text.length){ clearInterval(t); } }, delay); }
+    const playBtn = byId('playMsgBtn');
+    playBtn.addEventListener('click', ()=>{
+      const full = `My beloved Sangrila,\n\nFrom the moment you entered my life, everything became more beautiful. Your smile brightens even my darkest days, and your love gives me strength I never knew I had. Every picture in our gallery tells a story of our journey together - each moment precious, each memory treasured.\n\nHappy Birthday, my love. Here's to countless more adventures, endless laughter, and a lifetime of making memories together.\n\nForever and always yours, Arup`;
+      typeText(byId('letter'), full, 16);
+      blastConfetti(120);
     });
 
     // Confetti
