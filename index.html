@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday, <3</title>
+  <style>
+    :root{
+      --bg1:#0f1020; --bg2:#201034; --accent:#ff7ac6; --accent2:#8b5cf6; --ink:#f6f6f9; --muted:#cbd5e1;
+      --card:#14162a; --glass:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color:var(--ink);
+      background: radial-gradient(1200px 800px at 80% -10%, #2a1349, transparent),
+                  radial-gradient(900px 700px at -10% 0%, #121a45, transparent),
+                  linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+    .container{max-width:1100px; margin:0 auto; padding:24px}
+    .hero{display:grid; grid-template-columns:1.2fr .8fr; gap:24px; align-items:center}
+    @media (max-width:900px){.hero{grid-template-columns:1fr}}
+    .card{background:var(--glass); backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,.08);
+      border-radius:24px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h1{font-size: clamp(2rem, 5vw, 4rem); line-height:1.05; margin:0}
+    .accent{background:linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+    p.lead{font-size:clamp(1rem, 1.6vw, 1.2rem); color:var(--muted)}
+    .btn{appearance:none; border:0; padding:14px 18px; border-radius:14px; cursor:pointer; font-weight:700; color:#0b0b10;
+      box-shadow:0 4px 0 rgba(0,0,0,.25); background:linear-gradient(180deg,#fff,#eaeaff)}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary{background:linear-gradient(180deg,#ffd7f0,#ffc2ea)}
+    .row{display:flex; flex-wrap:wrap; gap:12px}
+
+    .countdown{display:grid; grid-template-columns:repeat(4, minmax(72px, 1fr)); gap:12px; margin-top:16px}
+    .timebox{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:12px; text-align:center}
+    .timebox .num{font-size:clamp(1.4rem, 3.2vw, 2.2rem); font-weight:800}
+    .timebox .lbl{font-size:.8rem; color:var(--muted)}
+
+    .section{margin-top:28px}
+    .gallery{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px}
+    .gallery img{width:100%; height:160px; object-fit:cover; border-radius:14px; border:1px solid rgba(255,255,255,.1)}
+
+    .letter{min-height:140px; resize:vertical; width:100%; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:var(--ink);
+      border-radius:16px; padding:14px; font-size:1rem}
+
+    /* Modal */
+    .modal{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.5); padding:20px}
+    .modal[open]{display:grid}
+
+    .tiny{font-size:.9rem; color:var(--muted)}
+
+    /* Print as keepsake */
+    @media print{
+      body{background:#fff; color:#000}
+      .btn, #confetti, #hearts{display:none !important}
+      .card{border:0; box-shadow:none}
+    }
+
+    /* floating heart trail */
+    #hearts{position:fixed; inset:0; pointer-events:none}
+    #confetti{position:fixed; inset:0; pointer-events:none}
+  </style>
+</head>
+<body>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <canvas id="hearts" aria-hidden="true"></canvas>
+
+  <div class="container">
+    <section class="hero card">
+      <div>
+        <h1>
+          Happy Birthday, <span class="accent" id="herName">HER_NAME</span>! 🎂💖
+        </h1>
+        <p class="lead">
+          Another lap around the sun with you makes the galaxy brighter. I coded a tiny corner of the internet just for you — scroll, click, and find the surprises I hid. — <span id="yourName">YOUR_NAME</span>
+        </p>
+        <div class="row">
+          <button class="btn" id="secretBtn">Enter Secret Code</button>
+          <button class="btn secondary" id="printBtn">Save as PDF</button>
+        </div>
+        <div class="countdown" id="countdown" aria-live="polite" title="Countdown to your special day!"></div>
+        <p class="tiny">Tip: set the exact date below to enable the live countdown.</p>
+      </div>
+      <div class="card">
+        <label for="date">🎉 Birthday Date & Time</label>
+        <input id="date" type="datetime-local" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
+        <label for="code">🔐 Secret Code (she needs this)</label>
+        <input id="code" type="text" placeholder="e.g. LOVE2025" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
+        <label for="displayName">Her Name</label>
+        <input id="displayName" type="text" placeholder="Type her name" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
+        <label for="yourDisplayName">Your Name</label>
+        <input id="yourDisplayName" type="text" placeholder="Your name" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
+        <button class="btn" id="applyBtn">Apply</button>
+      </div>
+    </section>
+
+    <section class="section card">
+      <h2 class="accent" style="margin:0 0 8px">Memory Gallery</h2>
+      <p class="tiny">Drop photos here or use the picker. They only stay on this page (no upload).</p>
+      <div class="row" style="align-items:center; gap:10px; margin-bottom:10px">
+        <input id="picker" type="file" accept="image/*" multiple />
+        <button class="btn" id="clearGallery">Clear</button>
+      </div>
+      <div id="drop" class="card" style="border-style:dashed; border-color:rgba(255,255,255,.2); text-align:center; padding:24px; margin-bottom:12px">Drag & drop images here</div>
+      <div id="gallery" class="gallery" aria-live="polite"></div>
+    </section>
+
+    <section class="section card">
+      <h2 style="margin:0 0 8px"><span class="accent">Open Letter</span> to <span id="herName2">HER_NAME</span></h2>
+      <textarea id="letter" class="letter" placeholder="Write from the heart… (or keep my starter)">My dearest HER_NAME,
+
+Every day with you is my favorite part of the story. I love the way your smile resets my world, and how your laugh turns ordinary moments into celebrations. Thank you for being my calm, my spark, and my home.
+
+Happy Birthday. Today is about you — and the lifetime I want with you. 💖
+
+Forever yours,
+YOUR_NAME
+      </textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="copyLetter">Copy Letter</button>
+        <button class="btn secondary" id="printLetter">Print Letter</button>
+      </div>
+    </section>
+
+    <section class="section card">
+      <h2 class="accent" style="margin:0 0 8px">Secret Code Prize</h2>
+      <p class="tiny">She types the secret code to unlock this note. Default code is <b>LOVE2025</b> (change above).</p>
+      <div id="prize" style="display:none">
+        <p style="font-size:1.1rem">💌 You cracked it! Here’s your clue: 
+          <em>"Look under the place where stories sleep — the gift is taped to page 143."</em>
+        </p>
+        <p class="tiny">(Edit this prize text in the code if you want a different surprise.)</p>
+      </div>
+    </section>
+
+    <footer class="tiny" style="text-align:center; margin:24px 0 12px; opacity:.8">
+      Made with ❤️ by YOUR_NAME. Print this page to save as a keepsake.
+    </footer>
+  </div>
+
+  <!-- Secret modal -->
+  <dialog class="modal" id="secretModal" aria-modal="true" aria-labelledby="secretTitle">
+    <div class="card" style="max-width:480px; width:min(92vw, 480px)">
+      <h3 id="secretTitle" style="margin-top:0">Enter the Secret Code</h3>
+      <input id="secretInput" type="password" placeholder="Type the code" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
+      <div class="row">
+        <button class="btn" id="unlockBtn">Unlock</button>
+        <button class="btn secondary" id="closeModal">Close</button>
+      </div>
+      <p id="hint" class="tiny" style="margin-top:10px; display:none">Hint: It might be your birth date in <code>DDMMYYYY</code> 😉</p>
+    </div>
+  </dialog>
+
+  <script>
+    // --- Local state helpers
+    const qs = (s,el=document)=>el.querySelector(s);
+    const byId = (id)=>document.getElementById(id);
+
+    const state = JSON.parse(localStorage.getItem('bdState')||'{}');
+
+    const herNameEl = byId('herName');
+    const herNameEl2 = byId('herName2');
+    const yourNameEl = byId('yourName');
+
+    // Apply from state on load
+    function applyState(){
+      if(state.her){ herNameEl.textContent = state.her; herNameEl2.textContent = state.her; }
+      if(state.you){ yourNameEl.textContent = state.you; }
+      if(state.code){ byId('code').value = state.code; }
+      if(state.date){ byId('date').value = state.date; }
+      updateCountdown();
+      personalizeLetter();
+    }
+
+    function personalizeLetter(){
+      const t = byId('letter').value
+        .replaceAll('HER_NAME', state.her || 'HER_NAME')
+        .replaceAll('YOUR_NAME', state.you || 'YOUR_NAME');
+      byId('letter').value = t;
+    }
+
+    // Save/apply from UI
+    byId('applyBtn').addEventListener('click', ()=>{
+      state.date = byId('date').value;
+      state.code = (byId('code').value || 'LOVE2025').trim();
+      state.her  = byId('displayName').value.trim() || state.her || 'HER_NAME';
+      state.you  = byId('yourDisplayName').value.trim() || state.you || 'YOUR_NAME';
+      localStorage.setItem('bdState', JSON.stringify(state));
+      applyState();
+      blastConfetti(180);
+    });
+
+    // Countdown logic
+    const cd = byId('countdown');
+    let cdTimer;
+    function updateCountdown(){
+      if(cdTimer) clearInterval(cdTimer);
+      const iso = state.date || '';
+      if(!iso){ cd.innerHTML = '<div class="timebox"><div class="num">--</div><div class="lbl">Days</div></div>'.repeat(4); return; }
+      const target = new Date(iso);
+      function tick(){
+        const now = new Date();
+        let diff = Math.max(0, target - now);
+        const days = Math.floor(diff / (1000*60*60*24)); diff -= days*86400000;
+        const hrs  = Math.floor(diff / (1000*60*60)); diff -= hrs*3600000;
+        const mins = Math.floor(diff / (1000*60)); diff -= mins*60000;
+        const secs = Math.floor(diff / 1000);
+        cd.innerHTML = `
+          <div class="timebox"><div class="num">${days}</div><div class="lbl">Days</div></div>
+          <div class="timebox"><div class="num">${hrs}</div><div class="lbl">Hours</div></div>
+          <div class="timebox"><div class="num">${mins}</div><div class="lbl">Minutes</div></div>
+          <div class="timebox"><div class="num">${secs}</div><div class="lbl">Seconds</div></div>`;
+      }
+      tick();
+      cdTimer = setInterval(tick, 1000);
+    }
+
+    // Modal logic
+    const modal = byId('secretModal');
+    byId('secretBtn').addEventListener('click', ()=>{ modal.setAttribute('open',''); byId('hint').style.display='none'; byId('secretInput').value=''; byId('secretInput').focus(); });
+    byId('closeModal').addEventListener('click', ()=> modal.removeAttribute('open'));
+    byId('unlockBtn').addEventListener('click', ()=>{
+      const ok = (byId('secretInput').value||'').trim() === (state.code||'LOVE2025');
+      if(ok){
+        blastConfetti(260);
+        byId('prize').style.display='block';
+        modal.removeAttribute('open');
+      }else{
+        byId('hint').style.display='block';
+        shake(modal.querySelector('.card'));
+      }
+    });
+
+    // Copy / print actions
+    byId('copyLetter').addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(byId('letter').value); toast('Copied to clipboard!'); }catch(e){ toast('Could not copy, select & copy manually.'); }
+    });
+    byId('printLetter').addEventListener('click', ()=>window.print());
+    byId('printBtn').addEventListener('click', ()=>window.print());
+
+    // Memory gallery
+    const gallery = byId('gallery');
+    const drop = byId('drop');
+    const picker = byId('picker');
+
+    function addImage(file){
+      const url = URL.createObjectURL(file);
+      const img = new Image(); img.src=url; img.loading='lazy';
+      img.alt = file.name; gallery.appendChild(img);
+    }
+    picker.addEventListener('change', e=>{ [...e.target.files].forEach(addImage); picker.value = '' });
+    ['dragover','dragenter'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.style.borderColor='var(--accent)'; }));
+    ;['dragleave','drop'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.style.borderColor='rgba(255,255,255,.2)'; }));
+    drop.addEventListener('drop', e=>{ const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')); files.forEach(addImage); });
+    byId('clearGallery').addEventListener('click', ()=>{ gallery.innerHTML=''; });
+
+    // Subtle animation helpers
+    function shake(el){ el.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:250}); }
+    function toast(msg){
+      const t=document.createElement('div');
+      t.textContent=msg; t.style.cssText='position:fixed;left:50%;top:20px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);z-index:9999';
+      document.body.appendChild(t); setTimeout(()=>t.remove(), 1500);
+    }
+
+    // Confetti
+    const c = byId('confetti'); const ctx = c.getContext('2d');
+    const hcv = byId('hearts'); const hctx = hcv.getContext('2d');
+    let W,H; function size(){ W= c.width = hcv.width = innerWidth; H = c.height = hcv.height = innerHeight; } size(); addEventListener('resize', size);
+    const pieces=[]; const hearts=[];
+    function blastConfetti(n=150){
+      for(let i=0;i<n;i++){
+        pieces.push({x:Math.random()*W, y:-20, s:4+Math.random()*6, r:Math.random()*Math.PI, v:2+Math.random()*3, w: (Math.random()*.04)+.01});
+      }
+    }
+    function addHeartTrail(x,y){ hearts.push({x,y, s:8+Math.random()*10, a:1, vy:- (1+Math.random()*2)}); }
+
+    addEventListener('pointermove', e=> addHeartTrail(e.clientX, e.clientY));
+
+    function drawHeart(x,y,s){
+      hctx.save(); hctx.translate(x,y); hctx.beginPath();
+      const k = s/16; // size scale
+      hctx.moveTo(0,3*k);
+      hctx.bezierCurveTo(0,-5*k, 8*k,-5*k, 8*k,3*k);
+      hctx.bezierCurveTo(8*k,10*k, 0,12*k, 0,16*k);
+      hctx.bezierCurveTo(0,12*k, -8*k,10*k, -8*k,3*k);
+      hctx.bezierCurveTo(-8*k,-5*k, 0,-5*k, 0,3*k);
+      hctx.closePath();
+      hctx.fillStyle = `hsla(${Math.random()*360}, 90%, 70%, .85)`;
+      hctx.fill();
+      hctx.restore();
+    }
+
+    function loop(){
+      // confetti
+      ctx.clearRect(0,0,W,H);
+      for(let i=pieces.length-1;i>=0;i--){
+        const p=pieces[i]; p.y += p.v; p.r += p.w;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+        ctx.fillStyle = `hsl(${(p.y/3)%360} 90% 70%)`;
+        ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s*0.6);
+        ctx.restore();
+        if(p.y>H+20) pieces.splice(i,1);
+      }
+      // hearts
+      hctx.clearRect(0,0,W,H);
+      for(let i=hearts.length-1;i>=0;i--){
+        const h=hearts[i]; h.y += h.vy; h.a -= .01; h.s *= .99;
+        hctx.globalAlpha = Math.max(0,h.a);
+        drawHeart(h.x,h.y,h.s);
+        if(h.a<=0 || h.s<2) hearts.splice(i,1);
+        hctx.globalAlpha = 1;
+      }
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    // Initial confetti burst for joy
+    setTimeout(()=>blastConfetti(200), 600);
+
+    // Kick things off
+    applyState();
+  </script>
+</body>
+</html>
