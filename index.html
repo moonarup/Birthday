@@ -67,6 +67,20 @@
   .lightbox{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.75); z-index:9999}
   .lightbox[open]{display:flex}
   .lightbox img{max-width:92vw; max-height:86vh; border-radius:10px; box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  /* Surprise modal */
+  .surprise{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(10,6,24,.92), rgba(20,8,40,.92)); z-index:10000; padding:24px}
+  .surprise[open]{display:flex}
+  .surprise .panel{width:min(980px,94vw); max-width:980px; border-radius:18px; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); box-shadow:0 30px 80px rgba(0,0,0,.6); border:1px solid rgba(255,255,255,.06); display:grid; grid-template-columns:1fr 420px}
+  @media (max-width:900px){ .surprise .panel{grid-template-columns:1fr; max-height:86vh; overflow:auto} }
+  .slides{position:relative; background:#000}
+  .slide{position:absolute; inset:0; opacity:0; transition:opacity .9s ease; display:flex; align-items:center; justify-content:center}
+  .slide img{width:100%; height:100%; object-fit:cover}
+  .slide.active{opacity:1}
+  .side{padding:24px; display:flex; flex-direction:column; gap:12px; justify-content:center}
+  .msg{background:rgba(255,255,255,.02); border-radius:12px; padding:14px; min-height:220px; color:var(--ink); font-size:1rem; line-height:1.4; white-space:pre-wrap}
+  .surprise .controls{display:flex; gap:8px; margin-top:8px}
+  .surprise .bigTitle{font-size:clamp(1.6rem, 3.5vw, 2.6rem); margin:0}
+  .surprise .heartFloat{position:absolute; right:14px; top:14px; pointer-events:none}
 
     /* Print as keepsake */
     @media print{
@@ -123,6 +137,32 @@
     <dialog class="lightbox" id="lightbox">
       <img id="lightboxImg" alt="" />
     </dialog>
+
+    <div class="surprise" id="surprise">
+      <div class="panel">
+        <div class="slides" id="slides">
+          <div class="slide active"><img src="LOVE.jpg" alt=""/></div>
+          <div class="slide"><img src="MEOW.jpg" alt=""/></div>
+          <div class="slide"><img src="MINE.jpg" alt=""/></div>
+          <div class="slide"><img src="SHE.jpg" alt=""/></div>
+        </div>
+        <div class="side">
+          <h3 class="bigTitle">For Sangrila — With all my heart</h3>
+          <div class="msg" id="surpriseMsg"> </div>
+          <div class="surpriseControls">
+            <div class="controls">
+              <button class="btn" id="closeSurprise">Close</button>
+              <button class="btn secondary" id="hearBtn">Hear me</button>
+              <button class="btn" id="nextSlide">Next ▶</button>
+            </div>
+            <small class="tiny">Tip: click images to pause the slideshow.</small>
+          </div>
+        </div>
+      </div>
+      <svg class="heartFloat" width="80" height="80" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 21s-7-4.35-9-7.5C-1 9 4 4 7 6c1.5 1 1 3 5 6 4-3 3.5-5 5-6 3-2 8 3-4 7.5-2 3.15-9 7.5-9 7.5z" fill="#ff69b4" opacity=".95"/>
+      </svg>
+    </div>
 
     <section class="section card">
       <h2 style="margin:0 0 8px"><span class="accent">My Love Letter</span> to <span id="herName2">Sangrila</span></h2>
@@ -196,6 +236,33 @@ YOUR_NAME
       byId('prize').style.display = 'block';
       blastConfetti(260);
       toast('Happy Birthday, Sangrila!');
+      openSurprise();
+    });
+
+    // Surprise modal logic
+    const surprise = byId('surprise');
+    const slides = [...document.querySelectorAll('.slide')];
+    let slideIdx = 0; let slideTimer;
+    function showSlide(i){ slides.forEach((s,idx)=> s.classList.toggle('active', idx===i)); slideIdx = i; }
+    function startSlides(){ slideTimer = setInterval(()=>{ showSlide((slideIdx+1)%slides.length); }, 3000); }
+    function stopSlides(){ clearInterval(slideTimer); slideTimer = null; }
+    function openSurprise(){ surprise.setAttribute('open',''); showSlide(0); startSlides(); playSurpriseMessage(); }
+    function closeSurprise(){ surprise.removeAttribute('open'); stopSlides(); }
+    byId('closeSurprise').addEventListener('click', ()=> closeSurprise());
+    byId('nextSlide').addEventListener('click', ()=>{ stopSlides(); showSlide((slideIdx+1)%slides.length); startSlides(); });
+    slides.forEach(s=> s.addEventListener('click', ()=>{ if(slideTimer) stopSlides(); else startSlides(); }));
+
+    // Typewriter for surprise message
+    const surpriseMsg = byId('surpriseMsg');
+    function playSurpriseMessage(){ const text = `My sweetest Sangrila,\n\nToday is about you — about the warmth of your smile, the kindness in your eyes, and the joy you bring into every quiet moment. I wanted to make a little place on the web where you can feel how loved you are.\n\nLook around, enjoy the pictures, and know that I'm forever grateful for every laugh, every hug, and every day with you. Happy Birthday, my heart.\n\nAlways yours,\nArup`;
+      surpriseMsg.textContent = '';
+      let i=0; const t = setInterval(()=>{ surpriseMsg.textContent += text[i++]||''; if(i>text.length) clearInterval(t); }, 18); }
+
+    // Speech synthesis for the message
+    byId('hearBtn').addEventListener('click', ()=>{
+      const s = new SpeechSynthesisUtterance(surpriseMsg.textContent || 'Happy Birthday, Sangrila!');
+      s.rate = 0.95; s.pitch = 1.1; s.lang = 'en-US';
+      speechSynthesis.cancel(); speechSynthesis.speak(s);
     });
 
     // Lightbox for gallery images
