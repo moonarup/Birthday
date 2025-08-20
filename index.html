@@ -2,15 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-s    <section class="section card">
-      <h2 class="accent" style="margin:0 0 8px">A Special Surprise for Sangrila</h2>
-      <p class="tiny">Enter our special date to unlock a surprise message. Default code is <b>LOVE2025</b> (change above).</p>
-      <div id="prize" style="display:none">
-        <p style="font-size:1.1rem">💌 My dearest Sangrila, 
-          <em>Look inside your favorite book, on the page where we first met. There's something special waiting for you there...</em>
-        </p>
-      </div>
-    </section>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Happy Birthday, Sangrila! 💖</title>
   <style>
     :root{
@@ -82,37 +74,23 @@
           Happy Birthday, <span class="accent" id="herName">Sangrila</span>! 🎂💖
         </h1>
         <p class="lead">
-          My dearest Sangrila, you light up my world with your presence. This special corner of the internet is dedicated to you, filled with our memories and my love. — <span id="yourName">YOUR_NAME</span>
+          My dearest Sangrila, you light up my world with your presence. This special corner of the internet is dedicated to you, filled with our memories and my love. — <span id="yourName">Arup</span>
         </p>
         <div class="row">
-          <button class="btn" id="secretBtn">Enter Secret Code</button>
+          <button class="btn" id="surpriseBtn">Open Your Surprise</button>
           <button class="btn secondary" id="printBtn">Save as PDF</button>
         </div>
-        <div class="countdown" id="countdown" aria-live="polite" title="Countdown to your special day!"></div>
-        <p class="tiny">Tip: set the exact date below to enable the live countdown.</p>
       </div>
-      <div class="card">
-        <label for="date">🎉 Birthday Date & Time</label>
-        <input id="date" type="datetime-local" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
-        <label for="code">🔐 Secret Code (she needs this)</label>
-        <input id="code" type="text" placeholder="e.g. LOVE2025" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
-        <label for="displayName">Her Name</label>
-        <input id="displayName" type="text" placeholder="Type her name" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
-        <label for="yourDisplayName">Your Name</label>
-        <input id="yourDisplayName" type="text" placeholder="Your name" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
-        <button class="btn" id="applyBtn">Apply</button>
+      <div class="card" style="text-align:center">
+        <img src="SHE.jpg" alt="Sangrila" style="width:100%; height:260px; object-fit:cover; border-radius:14px; margin-bottom:12px" />
+        <p class="tiny" style="margin-bottom:12px">Made just for you, Sangrila 💖</p>
       </div>
     </section>
 
     <section class="section card">
-      <h2 class="accent" style="margin:0 0 8px">Memory Gallery</h2>
-      <p class="tiny">Drop photos here or use the picker. They only stay on this page (no upload).</p>
-      <div class="row" style="align-items:center; gap:10px; margin-bottom:10px">
-        <input id="picker" type="file" accept="image/*" multiple />
-        <button class="btn" id="clearGallery">Clear</button>
-      </div>
-      <div id="drop" class="card" style="border-style:dashed; border-color:rgba(255,255,255,.2); text-align:center; padding:24px; margin-bottom:12px">Drag & drop images here</div>
-      <div id="gallery" class="gallery" aria-live="polite">
+      <h2 class="accent" style="margin:0 0 8px">Our Memories</h2>
+      <p class="tiny">A small collection of moments I cherish with you.</p>
+      <div id="gallery" class="gallery" aria-live="polite" style="margin-top:12px">
         <img src="LOVE.jpg" alt="Love memories with Sangrila" />
         <img src="MEOW.jpg" alt="Special moments with Sangrila" />
         <img src="MINE.jpg" alt="Beautiful memories with Sangrila" />
@@ -140,13 +118,12 @@ YOUR_NAME
     </section>
 
     <section class="section card">
-      <h2 class="accent" style="margin:0 0 8px">Secret Code Prize</h2>
-      <p class="tiny">She types the secret code to unlock this note. Default code is <b>LOVE2025</b> (change above).</p>
-      <div id="prize" style="display:none">
-        <p style="font-size:1.1rem">💌 You cracked it! Here’s your clue: 
-          <em>"Look under the place where stories sleep — the gift is taped to page 143."</em>
+      <h2 class="accent" style="margin:0 0 8px">A Little Surprise</h2>
+      <p class="tiny">Click "Open Your Surprise" above to reveal a sweet note and a small clue I've hidden just for you.</p>
+      <div id="prize" style="display:none; margin-top:8px">
+        <p style="font-size:1.1rem">💌 My love, 
+          <em>Check the place where we keep our photos — there's a tiny envelope tucked behind the first picture.</em>
         </p>
-        <p class="tiny">(Edit this prize text in the code if you want a different surprise.)</p>
       </div>
     </section>
 
@@ -155,129 +132,44 @@ YOUR_NAME
     </footer>
   </div>
 
-  <!-- Secret modal -->
-  <dialog class="modal" id="secretModal" aria-modal="true" aria-labelledby="secretTitle">
-    <div class="card" style="max-width:480px; width:min(92vw, 480px)">
-      <h3 id="secretTitle" style="margin-top:0">Enter the Secret Code</h3>
-      <input id="secretInput" type="password" placeholder="Type the code" style="width:100%; margin:8px 0 14px; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--ink)" />
-      <div class="row">
-        <button class="btn" id="unlockBtn">Unlock</button>
-        <button class="btn secondary" id="closeModal">Close</button>
-      </div>
-      <p id="hint" class="tiny" style="margin-top:10px; display:none">Hint: It might be your birth date in <code>DDMMYYYY</code> 😉</p>
-    </div>
-  </dialog>
+  <!-- Intentionally simplified: site is a single-person page for Sangrila -->
 
   <script>
     // --- Local state helpers
     const qs = (s,el=document)=>el.querySelector(s);
     const byId = (id)=>document.getElementById(id);
 
-    const state = JSON.parse(localStorage.getItem('bdState')||'{}');
-
+    // Personalization for Sangrila
     const herNameEl = byId('herName');
     const herNameEl2 = byId('herName2');
     const yourNameEl = byId('yourName');
+    herNameEl.textContent = 'Sangrila';
+    herNameEl2.textContent = 'Sangrila';
+    yourNameEl.textContent = 'Arup';
 
-    // Apply from state on load
-    function applyState(){
-      if(state.her){ herNameEl.textContent = state.her; herNameEl2.textContent = state.her; }
-      if(state.you){ yourNameEl.textContent = state.you; }
-      if(state.code){ byId('code').value = state.code; }
-      if(state.date){ byId('date').value = state.date; }
-      updateCountdown();
-      personalizeLetter();
-    }
-
-    function personalizeLetter(){
-      const t = byId('letter').value
-        .replaceAll('Sangrila', state.her || 'Sangrila')
-        .replaceAll('YOUR_NAME', state.you || 'YOUR_NAME');
-      byId('letter').value = t;
-    }
-
-    // Save/apply from UI
-    byId('applyBtn').addEventListener('click', ()=>{
-      state.date = byId('date').value;
-      state.code = (byId('code').value || 'LOVE2025').trim();
-      state.her  = byId('displayName').value.trim() || state.her || 'Sangrila';
-      state.you  = byId('yourDisplayName').value.trim() || state.you || 'YOUR_NAME';
-      localStorage.setItem('bdState', JSON.stringify(state));
-      applyState();
-      blastConfetti(180);
-    });
-
-    // Countdown logic
-    const cd = byId('countdown');
-    let cdTimer;
-    function updateCountdown(){
-      if(cdTimer) clearInterval(cdTimer);
-      const iso = state.date || '';
-      if(!iso){ cd.innerHTML = '<div class="timebox"><div class="num">--</div><div class="lbl">Days</div></div>'.repeat(4); return; }
-      const target = new Date(iso);
-      function tick(){
-        const now = new Date();
-        let diff = Math.max(0, target - now);
-        const days = Math.floor(diff / (1000*60*60*24)); diff -= days*86400000;
-        const hrs  = Math.floor(diff / (1000*60*60)); diff -= hrs*3600000;
-        const mins = Math.floor(diff / (1000*60)); diff -= mins*60000;
-        const secs = Math.floor(diff / 1000);
-        cd.innerHTML = `
-          <div class="timebox"><div class="num">${days}</div><div class="lbl">Days</div></div>
-          <div class="timebox"><div class="num">${hrs}</div><div class="lbl">Hours</div></div>
-          <div class="timebox"><div class="num">${mins}</div><div class="lbl">Minutes</div></div>
-          <div class="timebox"><div class="num">${secs}</div><div class="lbl">Seconds</div></div>`;
-      }
-      tick();
-      cdTimer = setInterval(tick, 1000);
-    }
-
-    // Modal logic
-    const modal = byId('secretModal');
-    byId('secretBtn').addEventListener('click', ()=>{ modal.setAttribute('open',''); byId('hint').style.display='none'; byId('secretInput').value=''; byId('secretInput').focus(); });
-    byId('closeModal').addEventListener('click', ()=> modal.removeAttribute('open'));
-    byId('unlockBtn').addEventListener('click', ()=>{
-      const ok = (byId('secretInput').value||'').trim() === (state.code||'LOVE2025');
-      if(ok){
-        blastConfetti(260);
-        byId('prize').style.display='block';
-        modal.removeAttribute('open');
-      }else{
-        byId('hint').style.display='block';
-        shake(modal.querySelector('.card'));
-      }
-    });
+    // Personalize letter placeholder
+    const letterEl = byId('letter');
+    letterEl.value = letterEl.value.replaceAll('YOUR_NAME','Arup').replaceAll('\uFFFD','');
 
     // Copy / print actions
     byId('copyLetter').addEventListener('click', async ()=>{
-      try{ await navigator.clipboard.writeText(byId('letter').value); toast('Copied to clipboard!'); }catch(e){ toast('Could not copy, select & copy manually.'); }
+      try{ await navigator.clipboard.writeText(byId('letter').value); toast('Letter copied to clipboard'); }catch(e){ toast('Could not copy, select & copy manually.'); }
     });
     byId('printLetter').addEventListener('click', ()=>window.print());
     byId('printBtn').addEventListener('click', ()=>window.print());
-
-    // Memory gallery
-    const gallery = byId('gallery');
-    const drop = byId('drop');
-    const picker = byId('picker');
-
-    function addImage(file){
-      const url = URL.createObjectURL(file);
-      const img = new Image(); img.src=url; img.loading='lazy';
-      img.alt = file.name; gallery.appendChild(img);
-    }
-    picker.addEventListener('change', e=>{ [...e.target.files].forEach(addImage); picker.value = '' });
-    ['dragover','dragenter'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.style.borderColor='var(--accent)'; }));
-    ;['dragleave','drop'].forEach(ev=> drop.addEventListener(ev, e=>{ e.preventDefault(); drop.style.borderColor='rgba(255,255,255,.2)'; }));
-    drop.addEventListener('drop', e=>{ const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')); files.forEach(addImage); });
-    byId('clearGallery').addEventListener('click', ()=>{ gallery.innerHTML=''; });
-
     // Subtle animation helpers
-    function shake(el){ el.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:250}); }
     function toast(msg){
       const t=document.createElement('div');
       t.textContent=msg; t.style.cssText='position:fixed;left:50%;top:20px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);z-index:9999';
       document.body.appendChild(t); setTimeout(()=>t.remove(), 1500);
     }
+
+    // Surprise button - reveals prize and blasts confetti
+    byId('surpriseBtn').addEventListener('click', ()=>{
+      byId('prize').style.display = 'block';
+      blastConfetti(260);
+      toast('Happy Birthday, Sangrila!');
+    });
 
     // Confetti
     const c = byId('confetti'); const ctx = c.getContext('2d');
@@ -331,11 +223,8 @@ YOUR_NAME
     }
     loop();
 
-    // Initial confetti burst for joy
-    setTimeout(()=>blastConfetti(200), 600);
-
-    // Kick things off
-    applyState();
+  // Initial confetti burst for joy
+  setTimeout(()=>blastConfetti(200), 600);
   </script>
 </body>
 </html>
