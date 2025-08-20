@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Happy Birthday, <3</title>
+  <title>Happy Birthday, </title>
   <style>
     :root{
       --bg1:#0f1020; --bg2:#201034; --accent:#ff7ac6; --accent2:#8b5cf6; --ink:#f6f6f9; --muted:#cbd5e1;
@@ -71,7 +71,7 @@
     <section class="hero card">
       <div>
         <h1>
-          Happy Birthday, <span class="accent" id="herName">HER_NAME</span>! 🎂💖
+          Happy Birthday, <span class="accent" id="herName">Sangrila</span>! 🎂💖
         </h1>
         <p class="lead">
           Another lap around the sun with you makes the galaxy brighter. I coded a tiny corner of the internet just for you — scroll, click, and find the surprises I hid. — <span id="yourName">YOUR_NAME</span>
@@ -108,8 +108,8 @@
     </section>
 
     <section class="section card">
-      <h2 style="margin:0 0 8px"><span class="accent">Open Letter</span> to <span id="herName2">HER_NAME</span></h2>
-      <textarea id="letter" class="letter" placeholder="Write from the heart… (or keep my starter)">My dearest HER_NAME,
+      <h2 style="margin:0 0 8px"><span class="accent">Open Letter</span> to <span id="herName2">Sangrila</span></h2>
+      <textarea id="letter" class="letter" placeholder="Write from the heart… (or keep my starter)">My dearest Sangrila,
 
 Every day with you is my favorite part of the story. I love the way your smile resets my world, and how your laugh turns ordinary moments into celebrations. Thank you for being my calm, my spark, and my home.
 
@@ -176,7 +176,7 @@ YOUR_NAME
 
     function personalizeLetter(){
       const t = byId('letter').value
-        .replaceAll('HER_NAME', state.her || 'HER_NAME')
+        .replaceAll('Sangrila', state.her || 'Sangrila')
         .replaceAll('YOUR_NAME', state.you || 'YOUR_NAME');
       byId('letter').value = t;
     }
@@ -185,7 +185,7 @@ YOUR_NAME
     byId('applyBtn').addEventListener('click', ()=>{
       state.date = byId('date').value;
       state.code = (byId('code').value || 'LOVE2025').trim();
-      state.her  = byId('displayName').value.trim() || state.her || 'HER_NAME';
+      state.her  = byId('displayName').value.trim() || state.her || 'Sangrila';
       state.you  = byId('yourDisplayName').value.trim() || state.you || 'YOUR_NAME';
       localStorage.setItem('bdState', JSON.stringify(state));
       applyState();
